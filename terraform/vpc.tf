@@ -98,21 +98,3 @@ resource "aws_route_table_association" "private-access-b-rt" {
   subnet_id      = aws_subnet.private-wp-b.id
   route_table_id = "${aws_vpc.da-wordpress-vpc.default_route_table_id}"
 }
-
-resource "aws_network_acl" "public_subnets_acl" {
-  vpc_id = "${aws_vpc.public_subnets_acl.id}"
-  subnet_ids = ["{aws_subnet.public_subnet.*.id}"] 
-  tags = {
-    Name = "public_subnets_acl"
-  }
-}
-
-resource "aws_network_acl" "private_subnets_acl" {
-  vpc_id = "${aws_vpc.public_subnets_acl.id}"
-  subnet_ids = ["${aws_subnet.private_subnet.*.id}"]        	
-  tags = {
-    Name = "private_subnets_acl"
-  }
-}
-# no rules defined, deny all traffic in this two ACLs
-
