@@ -88,3 +88,20 @@ variable "public_subnet-wp-b" {
   default = "10.0.255.0/24"
 }
 
+variable "vpc_rds_subnet_ids" {
+  description = "The ID's of the VPC subnets that the RDS cluster instances will be created in"
+  default = ["private-wp-a", "private-wp-b"]
+}
+
+variable "vpc_rds_security_group_id" {
+  default     = "aws_security_group.database.name"
+}
+
+variable "rds_master_username" {
+  description = "The ID's of the VPC subnets that the RDS cluster instances will be created in"
+  default     = "wpadmin"
+}
+
+variable "rds_master_password" {
+  default     =  "thisisasecurepassword"
+}
