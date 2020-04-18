@@ -1,9 +1,9 @@
 data "aws_availability_zones" "iac-azs" {
-    state = "available"
+  state = "available"
 }
 
 resource "aws_vpc" "da-wordpress-vpc" {
-  cidr_block = "${var.cidr_vpc}"
+  cidr_block           = "${var.cidr_vpc}"
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
@@ -12,21 +12,20 @@ resource "aws_vpc" "da-wordpress-vpc" {
 }
 
 resource "aws_eip" "da-wordpress-eip" {
-  vpc=true
+  vpc = true
 }
 
 resource "aws_internet_gateway" "da-wordpress-igw" {
   vpc_id = "${aws_vpc.da-wordpress-vpc.id}"
   tags = {
-    Name ="wp-igw"
+    Name = "wp-igw"
   }
 }
 
-
 resource "aws_subnet" "private-wp-a" {
-  vpc_id                  = "${aws_vpc.da-wordpress-vpc.id}"
-  cidr_block              = "${var.private_subnet-wp-a}"
-  availability_zone       = "${data.aws_availability_zones.iac-azs.names[0]}"
+  vpc_id            = "${aws_vpc.da-wordpress-vpc.id}"
+  cidr_block        = "${var.private_subnet-wp-a}"
+  availability_zone = "${data.aws_availability_zones.iac-azs.names[0]}"
 
   tags = {
     Name = "private-subnet-a"
@@ -34,9 +33,9 @@ resource "aws_subnet" "private-wp-a" {
 }
 
 resource "aws_subnet" "private-wp-b" {
-  vpc_id                  = "${aws_vpc.da-wordpress-vpc.id}"
-  cidr_block              = "${var.private_subnet-wp-b}"
-  availability_zone       = "${data.aws_availability_zones.iac-azs.names[1]}"
+  vpc_id            = "${aws_vpc.da-wordpress-vpc.id}"
+  cidr_block        = "${var.private_subnet-wp-b}"
+  availability_zone = "${data.aws_availability_zones.iac-azs.names[1]}"
 
   tags = {
     Name = "private-subnet-b"
@@ -44,9 +43,9 @@ resource "aws_subnet" "private-wp-b" {
 }
 
 resource "aws_subnet" "public-wp-a" {
-  vpc_id                  = "${aws_vpc.da-wordpress-vpc.id}"
-  cidr_block              = "${var.public_subnet-wp-a}"
-  availability_zone       = "${data.aws_availability_zones.iac-azs.names[2]}"
+  vpc_id            = "${aws_vpc.da-wordpress-vpc.id}"
+  cidr_block        = "${var.public_subnet-wp-a}"
+  availability_zone = "${data.aws_availability_zones.iac-azs.names[2]}"
 
   tags = {
     Name = "public-subnet-a"
@@ -54,9 +53,9 @@ resource "aws_subnet" "public-wp-a" {
 }
 
 resource "aws_subnet" "public-wp-b" {
-  vpc_id                  = "${aws_vpc.da-wordpress-vpc.id}"
-  cidr_block              = "${var.public_subnet-wp-b}"
-  availability_zone       = "${data.aws_availability_zones.iac-azs.names[0]}"
+  vpc_id            = "${aws_vpc.da-wordpress-vpc.id}"
+  cidr_block        = "${var.public_subnet-wp-b}"
+  availability_zone = "${data.aws_availability_zones.iac-azs.names[0]}"
 
   tags = {
     Name = "public-subnet-b"
@@ -67,8 +66,8 @@ resource "aws_route_table" "public-access" {
   vpc_id = "${aws_vpc.da-wordpress-vpc.id}"
 
   route {
-      cidr_block = "0.0.0.0/0"
-      gateway_id = "${aws_internet_gateway.da-wordpress-igw.id}"
+    cidr_block = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.da-wordpress-igw.id}"
   }
 }
 
