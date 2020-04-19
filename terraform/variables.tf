@@ -39,3 +39,7 @@ variable "public_subnet-wp-b" {
   default = "10.0.255.0/24"
 }
 
+variable "ecr_repository-image" {
+  type    = string
+  default = "wp-image"
+}
