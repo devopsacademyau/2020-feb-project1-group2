@@ -2,12 +2,11 @@ resource "aws_rds_cluster" "wp-db" {
   
     cluster_identifier            = "wp-db"
     database_name                 = "wpdb"
-    availability_zones            = ["ap-southeast-2a", "ap-southeast-2b"]
+    availability_zones            = ["${split(",", var.azs)}"]
     engine                        = "aurora-mysql"
-    engine_version                = "5.7.12"
-    engine_mode                   = "serverless"
+    engine_version                = "5.7.mysql_aurora.2.03.2" 
     master_username               = "${var.rds_master_username}"
-    master_password               = "${var.rds_master_password}"
+    master_password               = "${random_string.pw.result}"
     backup_retention_period       = 1
     preferred_backup_window       = "02:00-03:00"
     preferred_maintenance_window  = "wed:03:00-wed:04:00"
@@ -38,5 +37,11 @@ resource "aws_db_subnet_group" "wpdb_subnet_group" {
     name          = "wp-db_subnet_group"
     description   = "Allowed subnets for Aurora DB cluster instances"
     subnet_ids    = ["${aws_subnet.private-wp-a.id}", "${aws_subnet.private-wp-b.id}"]
+}
+
+resource "random_string" "pw" {
+  length  = 10
+  upper   = true
+  special = true
 }
 

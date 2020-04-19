@@ -102,6 +102,8 @@ variable "rds_master_username" {
   default     = "wpadmin"
 }
 
-variable "rds_master_password" {
-  default     =  "thisisasecurepassword"
+variable "azs" {
+    type = list(string)
+    default = ["ap-southeast-2a", "ap-southeast-2b"]
 }
+
