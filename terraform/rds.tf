@@ -2,7 +2,7 @@ resource "aws_rds_cluster" "wp-db" {
   
     cluster_identifier            = "wp-db"
     database_name                 = "wpdb"
-    availability_zones            = ["${split(",", var.azs)}"]
+    availability_zones            =  var.azs 
     engine                        = "aurora-mysql"
     engine_version                = "5.7.mysql_aurora.2.03.2" 
     master_username               = "${var.rds_master_username}"
@@ -10,7 +10,7 @@ resource "aws_rds_cluster" "wp-db" {
     backup_retention_period       = 1
     preferred_backup_window       = "02:00-03:00"
     preferred_maintenance_window  = "wed:03:00-wed:04:00"
-    db_subnet_group_name          = "${aws_db_subnet_group.wpdb_subnet_group.name}"
+    db_subnet_group_name          = aws_db_subnet_group.wpdb_subnet_group.name
     final_snapshot_identifier     = "wpdb-aurora-cluster"
     lifecycle {
         create_before_destroy = true
@@ -21,9 +21,11 @@ resource "aws_rds_cluster" "wp-db" {
 resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
 
     identifier            = "da-wordpress-db"
+    engine                = "aurora-mysql"
+    engine_version        = "5.7.mysql_aurora.2.03.2"
     cluster_identifier    = "${aws_rds_cluster.wp-db.id}"
-    instance_class        = "db.t2.micro"
-    db_subnet_group_name  = "aws_db_subnet_group.wpdb_subnet_group.name"
+    instance_class        = "db.r4.large"
+    db_subnet_group_name  = aws_db_subnet_group.wpdb_subnet_group.name
     publicly_accessible   = false
 
     lifecycle {
@@ -42,6 +44,6 @@ resource "aws_db_subnet_group" "wpdb_subnet_group" {
 resource "random_string" "pw" {
   length  = 10
   upper   = true
-  special = true
+  special = false 
 }
 
