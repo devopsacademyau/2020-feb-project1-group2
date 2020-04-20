@@ -1,16 +1,44 @@
 <em><h1>Wordpress Project - Group 2</h1></em>
 Here we will discuss how to run the Project solution
 
-<h2>How to run</h2>
+<em><h2>How to run</h2><p></em>
 - Take a clone or fork of the repoistry from Git
+<br>
 - Navgiate to the terraform folder (cd terraform)
+<br>
 - You'll need to initialize terraform to do this, please type ```terraform init```
-- Once completed, type ```terraform plan``` This will plan out the way the Infrastructure is deployed, if you recieve any issues during this phase, please inform the team.
+<br>
+- Once completed, type ```terraform plan``` This will plan out the way the Infrastructure is deployed, if you recieve any issues    during this phase, please inform the team.
+<br>
 - Finally finish off with ```terraform apply``` and hit ```yes``` when prompoted. (You may recieve some issues regarding a lock file when applying, if this is the case please add the following parameter -lock=false)
+<br>
+- Once review has been completed, please don't forget to type ```terraform destroy -lock=false``` (Note there may be some issues regarding a DB Snapshot when destroying the code, if you do recieve this error navigate to your AWS RDS Console and select Snapshots from the left hand side, and delete the snapshot related to the created DB cluster.</p>
+<br>
 
-- Once review has been completed, please don't forget to type ```terraform destroy -lock=false``` (Note there may be some issues regarding a DB Snapshot when destroying the code, if you do recieve this error navigate to your AWS RDS Console and select Snapshots from the left hand side, and delete the snapshot related to the created DB cluster.
+<h2>RDS</h2>
+<em>Here will describe the parts of the RDS Code.</em>
+- The RDS Code is made of of 3 different resrouces.
 
+- ```aws_rds_cluster```
+- ```aws_rds_cluster_instance```
+- ```aws_db_subnet_group```
 
+Each resrouce has a part to create with the DB Cluster.
+
+- Within the RDS code, we're defiing what type of RDS Cluster to create, which Availability Zone it shall reside in, DB Username / Password, VPC Subnet Association, Instance Class
+
+Finally, there is a random resrouce that will generate a password using the arguments specified in the code, and display the out upon creation
+You will use the output to fill the System Manager Parameter.
+
+<h2> Security Groups </h2>
+- Along side the RDS Code, there is also Security group code.
+<br>
+This is mandotray to have the security groups defined upon DB Cluster creation 
+
+<h2> Variables </h2>
+- There have been a few additions to the variable file, which contains DB username, RDS Security Group ID, Subnet ID's, Availability Zone.
+
+<br>
 
 ###**ECR**
 
