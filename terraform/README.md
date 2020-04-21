@@ -10,9 +10,9 @@ Here we will discuss how to run the Project solution
 <br>
 - Once completed, type ```terraform plan``` This will plan out the way the Infrastructure is deployed, if you recieve any issues    during this phase, please inform the team.
 <br>
-- Finally finish off with ```terraform apply``` and hit ```yes``` when prompoted. (You may recieve some issues regarding a lock file when applying, if this is the case please add the following parameter -lock=false)
+- Finally finish off with ```terraform apply``` and hit ```yes``` when prompoted. 
 <br>
-- Once review has been completed, please don't forget to type ```terraform destroy -lock=false``` (Note there may be some issues regarding a DB Snapshot when destroying the code, if you do recieve this error navigate to your AWS RDS Console and select Snapshots from the left hand side, and delete the snapshot related to the created DB cluster.</p>
+- Once review has been completed, please don't forget to type ```terraform destroy``` (Note there may be some issues regarding a DB Snapshot when destroying the code, if you do recieve this error navigate to your AWS RDS Console and select Snapshots from the left hand side, and delete the snapshot related to the created DB cluster.</p>
 <br>
 
 <h2>RDS</h2>
