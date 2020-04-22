@@ -1,34 +1,77 @@
-###**EFS**
+<em><h1>Wordpress Project - Group 2</h1></em>
+Here we will discuss how to run the Project solution
 
-**1) Creating Security Groups for accessing EFS:**
-    https://docs.aws.amazon.com/efs/latest/ug/wt1-create-ec2-resources.html
-    https://medium.com/swlh/attach-an-aws-efs-to-an-ecs-cluster-from-scratch-d34d83ccc5ae
-    https://www.terraform.io/docs/providers/aws/r/security_group.html#ingress
+<em><h2>How to run</h2><p></em>
+- Clone or Fork the repository from Git
+<br>
+- Navigate to the terraform folder (cd terraform)
+<br>
+- You'll need to initialize terraform to do this, please type ```terraform init```
+<br>
+- Once completed, type ```terraform plan``` This will plan out the way the Infrastructure is deployed, if you recieve any issues during this phase, please inform the team.
+<br>
+- Finally finish off with ```terraform apply``` and hit ```yes``` when prompoted. 
+<br>
+- Once review has been completed, please don't forget to type ```terraform destroy``` (Note there may be some issues regarding a DB Snapshot when destroying the code, if you do recieve this error navigate to your AWS RDS Console and select Snapshots from the left hand side, and delete the snapshot related to the created DB cluster.</p>
+<br>
+
+<h2>RDS</h2>
+<em>Here will describe the parts of the RDS Code.</em>
+- The RDS Code is made of 3 different resources.
+
+- ```aws_rds_cluster```
+- ```aws_rds_cluster_instance```
+- ```aws_db_subnet_group```
+
+Each resource has a part to create with the DB Cluster.
+
+- Within the RDS code, we're defining what type of RDS Cluster to create, which Availability Zone it shall reside in, DB Username / Password, VPC Subnet Association, Instance Class.
+
+Finally, there is a random resource that will generate a password using the arguments specified in the code, and display the out upon creation
+You will use the output to fill the System Manager Parameter.
+
+<h2> Security Groups </h2>
+- Along side the RDS Code, there is also Security group code.
+<br>
+This is mandotray to have the security groups defined upon DB Cluster creation 
+
+<h2> Variables </h2>
+- There have been a few additions to the variable file, which contains DB username, RDS Security Group ID, Subnet ID's, Availability Zone.
+
+<br>
+
+<h2> ECR </h2> 
+
+**```Pushing an image to the repository```**
+
+**1) Retrieve an authentication token and authenticate your Docker client to your registry.
+Use the AWS CLI:**
+  aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com/wp-image
+
+**2) Build your Docker image using the following command. For information on building a Docker file from scratch:**
+  docker build -t wp-image ./wordpress/.
+
+**3) After the build completes, tag your image so you can push the image to this repository:**
+  docker tag wp-image:latest aws_account_id.dkr.ecr.region.amazonaws.com/wp-image:latest
+
+**4) Run the following command to push this image to your newly created AWS repository:**
+  docker push aws_account_id.dkr.ecr.region.amazonaws.com/wp-image:latest
 
 
-**2) Creating EFS with terraform:**
-    https://www.terraform.io/docs/providers/aws/r/efs_file_system.html
-    https://www.terraform.io/docs/providers/aws/r/efs_mount_target.html
+**```Pulling an image to the repository```**
 
-**3) Creating an Access Point (CLI):**
-    aws efs create-access-point --file-system-id fs-01234567 --client-token 010102020-3
-    {
-        "ClientToken": "010102020-3",
-        "Tags": [],
-        "AccessPointId": "fsap-092e9f80b3fb5e6f3",
-        "AccessPointArn": "arn:aws:elasticfilesystem:us-east-2:111122223333:access-point/fsap-092e9f80b3fb5e6f3",
-        "FileSystemId": "fs-01234567",
-        "RootDirectory": {
-            "Path": "/"
-        },
-        "OwnerId": "111122223333",
-        "LifeCycleState": "creating"
-    }
+**1) Retrieve an authentication token and authenticate your Docker client to your registry.
+Use the AWS CLI:**
+  aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com/wp-image
 
-    More details can be found at https://docs.aws.amazon.com/efs/latest/ug/create-access-point.html
+**2)  Identify the image to pull:**
+  aws ecr describe-repositories
+  
+**3) Pull the image using the docker pull command:**
+  docker pull aws_account_id.dkr.ecr.region.amazonaws.com/wp-image:latest
+  <br>
 
-**4) Mounting efs volumes:**
-    https://github.com/aws/efs-utils
-    https://docs.aws.amazon.com/efs/latest/ug/mounting-fs.html
+<h2> EFS </h2> 
 
-
+- This solution uses Amazon Elastic File System (EFS), which is simple, scalable, and fully managed. The EFS can be accessed only by ECS instances and utilizes /wordpress access point which simplifies access to shared data.
+<br>
