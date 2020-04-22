@@ -2,13 +2,13 @@
 Here we will discuss how to run the Project solution
 
 <em><h2>How to run</h2><p></em>
-- Take a clone or fork of the repoistry from Git
+- Clone or Fork the repository from Git
 <br>
-- Navgiate to the terraform folder (cd terraform)
+- Navigate to the terraform folder (cd terraform)
 <br>
 - You'll need to initialize terraform to do this, please type ```terraform init```
 <br>
-- Once completed, type ```terraform plan``` This will plan out the way the Infrastructure is deployed, if you recieve any issues    during this phase, please inform the team.
+- Once completed, type ```terraform plan``` This will plan out the way the Infrastructure is deployed, if you recieve any issues during this phase, please inform the team.
 <br>
 - Finally finish off with ```terraform apply``` and hit ```yes``` when prompoted. 
 <br>
@@ -17,17 +17,17 @@ Here we will discuss how to run the Project solution
 
 <h2>RDS</h2>
 <em>Here will describe the parts of the RDS Code.</em>
-- The RDS Code is made of of 3 different resrouces.
+- The RDS Code is made of 3 different resources.
 
 - ```aws_rds_cluster```
 - ```aws_rds_cluster_instance```
 - ```aws_db_subnet_group```
 
-Each resrouce has a part to create with the DB Cluster.
+Each resource has a part to create with the DB Cluster.
 
-- Within the RDS code, we're defiing what type of RDS Cluster to create, which Availability Zone it shall reside in, DB Username / Password, VPC Subnet Association, Instance Class
+- Within the RDS code, we're defining what type of RDS Cluster to create, which Availability Zone it shall reside in, DB Username / Password, VPC Subnet Association, Instance Class.
 
-Finally, there is a random resrouce that will generate a password using the arguments specified in the code, and display the out upon creation
+Finally, there is a random resource that will generate a password using the arguments specified in the code, and display the out upon creation
 You will use the output to fill the System Manager Parameter.
 
 <h2> Security Groups </h2>
