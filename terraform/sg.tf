@@ -1,14 +1,3 @@
-# ECS Security Group 
-resource "aws_security_group" "ecs" {
-  name        = "ECS-Access"
-  description = "Manage access to ECS"
-  vpc_id      = "${aws_vpc.da-wordpress-vpc.id}"
-
-  tags = {
-    Name = "ECS-Access"
-  }
-}
-
 # EFS Security Group 
 resource "aws_security_group" "efs" {
   name        = "EFS-Access"
@@ -20,7 +9,8 @@ resource "aws_security_group" "efs" {
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
-    security_groups = ["${aws_security_group.ecs.id}"]
+    #security_groups = ["${aws_security_group.ecs.id}"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
