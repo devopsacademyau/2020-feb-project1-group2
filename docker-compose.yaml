@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+
+ wp:
+    image: "wpimage:${ID}"
+    build:
+        context: .
+        dockerfile: wordpress/Dockerfile
+    env_file: .env
+    working_dir: /var/www/html
+    volumes:
+        - /var/www/html
