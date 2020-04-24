@@ -31,29 +31,3 @@ resource "aws_alb_target_group" "target-group-alb" {
     protocol = "HTTPS"
     vpc_id = "${aws_vpc.da-wordpress-vpc}"
 }
-
-
-##### SG #####
-resource "aws_security_group" "sg-alb" {
-  name        = "alb-sg"
-  vpc_id      = "${aws_vpc.da-wordpress-vpc.id}"
-}
-
-resource "aws_security_group_rule" "sg-alb" {
-  type              = "ingress"
-  from_port         = "443"
-  to_port           = "443"
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.sg-alb.id}"
-}
-
-##### route 53 #####
-# add a domain name
-resource "aws_route53_record" "app-wordpress" {
-    zone_id = ["${var.azs}"]
-    name = "https://loadbalanceurl"
-    type = "CNAME"
-    ttl = "60"
-    records = ["${aws_alb.alb-da-wordpress.dns_name}"]
-}
