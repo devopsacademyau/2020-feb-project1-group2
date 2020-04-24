@@ -55,5 +55,24 @@ variable  "instance_type" {
 
 variable "ecr_repository-image" {
   type    = string
-  default = "TO DO"
+  default = "wp-image"
 }
+variable "vpc_rds_subnet_ids" {
+  description = "The ID's of the VPC subnets that the RDS cluster instances will be created in"
+  default = ["private-wp-a", "private-wp-b"]
+}
+
+variable "vpc_rds_security_group_id" {
+  default     = "aws_security_group.database.name"
+}
+
+variable "rds_master_username" {
+  description = "The ID's of the VPC subnets that the RDS cluster instances will be created in"
+  default     = "wpadmin"
+}
+
+variable "azs" {
+    type = list(string)
+    default = ["ap-southeast-2a", "ap-southeast-2b"]
+}
+
