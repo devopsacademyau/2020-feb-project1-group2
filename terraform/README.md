@@ -48,10 +48,9 @@ This is mandotray to have the security groups defined upon DB Cluster creation
 <br>
 <br>
 
-###**ECR**
+<h2> ECR </h2> 
 
-
-**#Pushing an image to the repository**
+**```Pushing an image to the repository```**
 
 **1) Retrieve an authentication token and authenticate your Docker client to your registry.
 Use the AWS CLI:**
@@ -67,7 +66,7 @@ Use the AWS CLI:**
   docker push aws_account_id.dkr.ecr.region.amazonaws.com/wp-image:latest
 
 
-**#Pulling an image to the repository**
+**```Pulling an image to the repository```**
 
 **1) Retrieve an authentication token and authenticate your Docker client to your registry.
 Use the AWS CLI:**
@@ -78,3 +77,12 @@ Use the AWS CLI:**
   
 **3) Pull the image using the docker pull command:**
   docker pull aws_account_id.dkr.ecr.region.amazonaws.com/wp-image:latest
+  <br>
+
+<br>
+<br>
+
+<h2> EFS </h2> 
+
+- This solution uses Amazon Elastic File System (EFS), which is simple, scalable, and fully managed. The EFS can be accessed only by ECS instances and utilizes /wordpress access point which simplifies access to shared data.
+<br>
