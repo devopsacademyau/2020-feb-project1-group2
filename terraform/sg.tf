@@ -26,11 +26,4 @@ resource "aws_security_group" "database" {
     tags = {
         Name = "database"
     }
-
-    ingress {
-        from_port = 3306
-        to_port = 3306
-        protocol = "tcp"
-        security_groups  = ["${aws_security_group.wordpress-access.id}"]
-    }
 }

@@ -2,18 +2,25 @@
 Here we will discuss how to run the Project solution
 
 <em><h2>How to run</h2><p></em>
-- Clone or Fork the repository from Git
+<ul>
+<li>Clone or Fork the repository from Git
 <br>
-- Navigate to the terraform folder (cd terraform)
 <br>
-- You'll need to initialize terraform to do this, please type ```terraform init```
+<li>Navigate to the terraform folder (cd terraform)
 <br>
-- Once completed, type ```terraform plan``` This will plan out the way the Infrastructure is deployed, if you recieve any issues during this phase, please inform the team.
 <br>
-- Finally finish off with ```terraform apply``` and hit ```yes``` when prompoted. 
+<li>You'll need to initialize terraform to do this, please type <em>terraform init</em>
 <br>
-- Once review has been completed, please don't forget to type ```terraform destroy``` (Note there may be some issues regarding a DB Snapshot when destroying the code, if you do recieve this error navigate to your AWS RDS Console and select Snapshots from the left hand side, and delete the snapshot related to the created DB cluster.</p>
 <br>
+<li>Once completed, type <em>terraform plan</em> This will plan out the way the Infrastructure is deployed, if you recieve any issues during this phase, please inform the team.
+<br>
+<br>
+<li>Finally finish off with <em>terraform apply</em> and hit yes when prompoted.
+<br>
+<br>
+  <li>Once review has been completed, please don't forget to type <em><strong>terraform destroy</strong></em> here may be some issues regarding a DB Snapshot when destroying the code, if you do recieve this error navigate to your AWS RDS Console and select Snapshots from the left hand side, and delete the snapshot related to the created DB cluster.</p>
+<br>
+     </ul>
 
 <h2>RDS</h2>
 <em>Here will describe the parts of the RDS Code.</em>
@@ -38,6 +45,7 @@ This is mandotray to have the security groups defined upon DB Cluster creation
 <h2> Variables </h2>
 - There have been a few additions to the variable file, which contains DB username, RDS Security Group ID, Subnet ID's, Availability Zone.
 
+<br>
 <br>
 
 <h2> ECR </h2> 
@@ -70,6 +78,9 @@ Use the AWS CLI:**
 **3) Pull the image using the docker pull command:**
   docker pull aws_account_id.dkr.ecr.region.amazonaws.com/wp-image:latest
   <br>
+
+<br>
+<br>
 
 <h2> EFS </h2> 
 
