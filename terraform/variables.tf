@@ -61,3 +61,16 @@ variable "azs" {
     type = list(string)
     default = ["ap-southeast-2a", "ap-southeast-2b"]
 }
+
+# the ECS optimized AMI's change by region. You can lookup the AMI here:
+variable "image_id" {
+  type        = string
+  description = "AMI image_id for ECS instance"
+  default     = "ami-064db566f79006111"
+}
+
+variable  "instance_type" {
+    type        = string
+    description = "AMI instance_type for ECS instance"
+    default     = "t2.micro"
+}
