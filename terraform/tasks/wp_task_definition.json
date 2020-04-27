@@ -1,7 +1,7 @@
 [{
     "secrets": [{
         "name": "DATABASE_PASSWORD",
-        "valueFrom": "arn:aws:ssm:ap-southeast-2:*:parameter/wordpress/WORDPRESS_DB_USER"
+        "valueFrom": "arn:aws:ssm:ap-southeast-2:parameter/wordpress/WORDPRESS_DB_USER"
         }],
     "volumesFrom": [],
     "volumes": [
@@ -22,7 +22,7 @@
     "memory": 128,
     "portMappings": [
         {
-            "hostPort": 443,
+            "hostPort": 80,
             "containerPort": 80,
             "protocol": "tcp"
         }

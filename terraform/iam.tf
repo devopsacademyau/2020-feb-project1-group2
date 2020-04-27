@@ -95,7 +95,7 @@ resource "aws_iam_role_policy_attachment" "ecs-service-attach" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
 }
 
-
+# These roles will be applied at the instance level, so your ecs host doesn’t have to pass credentials around
 resource "aws_iam_role" "ecs-ssm-role" {
   name = "ecs-ec2-role"
 
@@ -118,10 +118,5 @@ resource "aws_iam_role" "ecs-ssm-role" {
       }
     ]
   }
-EOF
-}
-
-resource "aws_iam_role_policy_attachment" "ecs-service-attach2" {
-  role       = "${aws_iam_role.ecs-ssm-role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
+  EOF
 }
