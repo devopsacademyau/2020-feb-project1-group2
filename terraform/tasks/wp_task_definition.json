@@ -1,24 +1,19 @@
 [{
     "secrets": [{
         "name": "DATABASE_PASSWORD",
+        "valueFrom": "/wordpress/WORDPRESS_DB_PASSWORD"
+        },
+        {"name": "DATABASE_USER",
         "valueFrom": "/wordpress/WORDPRESS_DB_USER"
         }],
     "volumesFrom": [],
-    "volumes": [
-    {
-        "name": "efs-wp",
-        "host": "null",
-        "dockerVolumeConfiguration": {
-            "autoprovision": null,
-            "labels": null,
-            "scope": "task",
-            "driver": "local",
-            "driverOpts": {
-                "type": "nfs",
-                "device": ":/"
-                }
-            }
-    }],
+    "mountPoints": [
+        {
+            "sourceVolume" : "service-storage-wp",
+            "readOnly"      : false,
+            "ContainerPath" : "/var/www/html/"
+        }],
+    
     "memory": 128,
     "portMappings": [
         {
@@ -28,14 +23,9 @@
         }
     ],
     "essential": true,
-    "mountPoints": [
-    {
-        "readOnly"      : false,
-        "ContainerPath" : "/var/www/html/",
-        "sourceVolume"  : "efs-wp"
-    }],
     "name": "da-wp-task",
     "environment": [],
     "image": "672269152614.dkr.ecr.ap-southeast-2.amazonaws.com/wp-image:latest",
     "cpu": 2
+
 }]

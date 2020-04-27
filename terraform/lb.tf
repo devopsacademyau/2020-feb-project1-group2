@@ -16,6 +16,8 @@ resource "aws_alb_target_group" "target-group-alb" {
     port = 443
     protocol = "HTTPS"
     vpc_id = "${aws_vpc.da-wordpress-vpc.id}"
+
+    #depends_on = ["${aws_alb.alb-da-wordpress}"]
 }
 
 # port listener
@@ -25,6 +27,7 @@ resource "aws_alb_listener" "albListeners-wp" {
   protocol          = "HTTP"
   default_action {
     type = "redirect"
+    target_group_arn = "${aws_alb_target_group.target-group-alb.arn}"
 
     redirect {
       port        = "443"

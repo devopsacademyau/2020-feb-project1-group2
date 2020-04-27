@@ -46,8 +46,13 @@ resource "aws_launch_configuration" "instance-ecs-da" {
   image_id                    = "${var.image_id}"
   instance_type               = "${var.instance_type}"
   iam_instance_profile        = "${aws_iam_instance_profile.ecs-ec2-role.id}"
-user_data = <<SCRIPT
+  user_data = <<SCRIPT
                     echo ECS_CLUSTER=${aws_ecs_cluster.ecs-da-migration.name} >> /etc/ecs/ecs.config
+                    EFS_DIR=/mnt/efs
+                    EFS_ID=${aws_efs_file_system.da-wordpress-efs.id}
+                    mkdir -p $${EFS_DIR}
+                    echo "$${EFS_ID}:/ $${EFS_DIR} efs tls,_netdev" >> /etc/fstab
+                    for i in $(seq 1 20); do mount -a -t efs defaults && break || sleep 60; done
                   SCRIPT
 
   associate_public_ip_address = true

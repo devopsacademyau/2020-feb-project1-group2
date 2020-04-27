@@ -13,22 +13,25 @@ data "template_file" "task_definition_json" {
 }
 resource "aws_ecs_task_definition" "wordpress-app" {
     family = "ecs-task-wp"
-
+    
     container_definitions  = "${data.template_file.task_definition_json.rendered}"
 
     volume {
-    name = "service-storage-wp"
+        name = "service-storage-wp"
 
-    efs_volume_configuration {
-        file_system_id = "${aws_efs_file_system.fs.id}"
-        root_directory = "/var/www/html"
-        }
+        #efs_volume_configuration {
+        #    file_system_id = "${aws_efs_file_system.fs.id}"
+        #    root_directory = "/var/www/html"
+        #    },
+        host_path  = "/mnt/efs"
+
     }
     memory                   = "256"
     cpu                      = "128"
     requires_compatibilities = ["EC2"]  
     network_mode     = "awsvpc"
-    task_role_arn    = "${aws_iam_role.ecs-ec2-role_.arn}"
+    #task_role_arn    = "${aws_iam_role.ecs-service-role.arn}"
+    execution_role_arn = "${aws_iam_role.ecs-ec2-role_.arn}"
 }
 
 
@@ -42,8 +45,8 @@ resource "aws_ecs_service" "wordpress-app" {
 
     # attaching an ELB with an ECS service
     load_balancer {
-        elb_name = "${aws_alb.alb-da-wordpress.id}"
-        container_name = "wordpress-container"
+        target_group_arn = "${aws_alb_target_group.target-group-alb.arn}"
+        container_name = "da-wp-task"
         container_port = 80
     }
 
