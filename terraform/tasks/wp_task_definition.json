@@ -1,15 +1,41 @@
 [{
-    "name": "aurora-db",
-    "cpu": 256,
-    "memory": 128,
-    "essential": true,
-    "portMappings": [{"containerPort": 80, "hostPort": 443}],
-
     "secrets": [{
         "name": "DATABASE_PASSWORD",
         "valueFrom": "arn:aws:ssm:ap-southeast-2:*:parameter/wordpress/WORDPRESS_DB_USER"
+        }],
+    "volumesFrom": [],
+    "volumes": [
+    {
+        "name": "efs-wp",
+        "host": "null",
+        "dockerVolumeConfiguration": {
+            "autoprovision": null,
+            "labels": null,
+            "scope": "task",
+            "driver": "local",
+            "driverOpts": {
+                "type": "nfs",
+                "device": ":/"
+                }
+            }
     }],
-    "mountPoints": [{
-        "containerPath": "../wordpress"
-    }]
+    "memory": 128,
+    "portMappings": [
+        {
+            "hostPort": 443,
+            "containerPort": 80,
+            "protocol": "tcp"
+        }
+    ],
+    "essential": true,
+    "mountPoints": [
+    {
+        "readOnly"      : false,
+        "ContainerPath" : "/var/www/html/",
+        "sourceVolume"  : "efs-wp"
+    }],
+    "name": "da-wp-task",
+    "environment": [],
+    "image": "672269152614.dkr.ecr.ap-southeast-2.amazonaws.com/wp-image:latest",
+    "cpu": 2
 }]
