@@ -94,3 +94,34 @@ resource "aws_iam_role_policy_attachment" "ecs-service-attach" {
   role       = "${aws_iam_role.ecs-service-role.name}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
 }
+
+
+resource "aws_iam_role" "ecs-ssm-role" {
+  name = "ecs-ec2-role"
+
+  assume_role_policy = <<EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "ssm:GetParameters",
+          "secretsmanager:GetSecretValue",
+          "kms:Decrypt"
+        ],
+        "Resource": [
+          "arn:aws:ssm:ap-southeast-2:*:parameter",
+          "arn:aws:secretsmanager:ap-southeast-2:*:secret:secret_name",
+          "arn:aws:kms:ap-southeast-2:*:key/key_id"
+        ]
+      }
+    ]
+  }
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "ecs-service-attach2" {
+  role       = "${aws_iam_role.ecs-ssm-role.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
+}
