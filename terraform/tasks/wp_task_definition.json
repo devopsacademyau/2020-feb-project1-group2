@@ -1,7 +1,7 @@
 [{
     "secrets": [{
         "name": "DATABASE_PASSWORD",
-        "valueFrom": "arn:aws:ssm:ap-southeast-2:parameter/wordpress/WORDPRESS_DB_USER"
+        "valueFrom": "/wordpress/WORDPRESS_DB_USER"
         }],
     "volumesFrom": [],
     "volumes": [

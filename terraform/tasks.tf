@@ -28,7 +28,7 @@ resource "aws_ecs_task_definition" "wordpress-app" {
     cpu                      = "128"
     requires_compatibilities = ["EC2"]  
     network_mode     = "awsvpc"
-    task_role_arn    = "${aws_iam_role.ecs-ec2-role.arn}"
+    task_role_arn    = "${aws_iam_role.ecs-ec2-role_.arn}"
 }
 
 
