@@ -13,7 +13,6 @@ data "template_file" "task_definition_json" {
 }
 resource "aws_ecs_task_definition" "wordpress-app" {
     family = "ecs-task-wp"
-    execution_role_arn = "${data.template_file.task_definition_json}"
 
     container_definitions  = "${data.template_file.task_definition_json.rendered}"
     #image = "${aws_ecr_repository.da-wordpress-ecr.repository_url}"
