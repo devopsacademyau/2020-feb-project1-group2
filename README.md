@@ -3,8 +3,7 @@
 Application migration from on-premise to the Cloud
 
 ## Solution Diagram
-
-<!-- Image of design will go here -->
+![AWSproject01](https://user-images.githubusercontent.com/45111486/80457800-3fa14780-8973-11ea-9982-a1e28bafa713.png)<!-- Image of design will go here -->
 
 ## Description
 
