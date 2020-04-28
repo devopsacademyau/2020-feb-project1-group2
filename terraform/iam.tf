@@ -1,6 +1,6 @@
 # ecs ec2 role
-resource "aws_iam_role" "ecs-ec2-role_" {
-  name = "ecs-ec2-role_"
+resource "aws_iam_role" "ecs-ec2-role" {
+  name = "ecs-ec2-role"
 
   assume_role_policy = <<EOF
 {
@@ -19,14 +19,9 @@ resource "aws_iam_role" "ecs-ec2-role_" {
 EOF
 }
 
-resource "aws_iam_instance_profile" "ecs-ec2-role" {
-  name = "ecs-ec2-role_"
-  role = "${aws_iam_role.ecs-ec2-role_.name}"
-}
-
 resource "aws_iam_role_policy" "ecs-ec2-role-policy" {
   name = "ecs-ec2-role-policy-test"
-  role = "${aws_iam_role.ecs-ec2-role_.id}"
+  role = "${aws_iam_role.ecs-ec2-role.id}"
 
   policy = <<EOF
 {
@@ -68,6 +63,17 @@ resource "aws_iam_role_policy" "ecs-ec2-role-policy" {
 }
 EOF
 }
+
+resource "aws_iam_role_policy_attachment" "ecs-service-attach" {
+role       = "${aws_iam_role.ecs-ec2-role.name}"
+policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
+}
+
+resource "aws_iam_instance_profile" "ecs-ec2-role" {
+  name = "ecs-ec2-role"
+  role = "${aws_iam_role.ecs-ec2-role.name}"
+}
+
 
 ##############################################
 # ecs service role
@@ -112,10 +118,10 @@ policy = <<EOF
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "ecs-service-attach" {
-role       = "${aws_iam_role.ecs-service-role.name}"
-policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
-}
+#resource "aws_iam_role_policy_attachment" "ecs-service-attach" {
+#role       = "${aws_iam_role.ecs-service-role.name}"
+#policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
+#}
 
 resource "aws_iam_role_policy_attachment" "ecs-service-attach-custom" {
 role       = "${aws_iam_role.ecs-service-role.name}"
