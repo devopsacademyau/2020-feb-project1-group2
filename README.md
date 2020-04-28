@@ -13,20 +13,20 @@ Our project follows the assumption that this application is currently being used
 
 ## Technologies used:
 
-• VCS → Github
-• Infra as Code → Terraform
-• Containerization → Docker / Docker-compose
-• Relational Database → Amazon Aurora (MySQL)
-• Container orchestrator → ECS
-• Host and images manager → ECR
-• Cloud file storage → EFS
+* VCS → Github
+* Infra as Code → Terraform
+* Containerization → Docker / Docker-compose
+* Relational Database → Amazon Aurora (MySQL)
+* Container orchestrator → ECS
+* Host and images manager → ECR
+* Cloud file storage → EFS
 
 ## Prerequisites to run this repository
 
-• Git
-• Docker Compose
-• Make
-• CLI
+* Git
+* Docker Compose
+* Make
+* CLI
 
 ## Run instructions
 
