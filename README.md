@@ -30,7 +30,11 @@ Our project follows the assumption that this application is currently being used
 
 ## Run instructions
 
-Firstly, you must initialize the AWS Component, that is to pass your credentials to terraform.
+Firstly, please ensure you in the terraform dir
+
+`cd terraform`
+
+Then you must initialize the AWS Component, that is to pass your credentials to terraform.
 To do this type.
 
 `make _awsinit`
