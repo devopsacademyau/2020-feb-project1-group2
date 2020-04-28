@@ -1,6 +1,6 @@
 # Devops Academy - Project 01 – Group 02
 
-Application migration from on-premise to the cloud
+Application migration from on-premise to the Cloud
 
 ## Solution Diagram
 
@@ -25,6 +25,7 @@ Our project follows the assumption that this application is currently being used
 ## Prerequisites to run this repository
 
 • Git
+• Docker Compose
 • Make
 • CLI
 
@@ -52,6 +53,7 @@ Then run
 To start the terraform init
 
 `make plan`
+
 To start terraform plan
 
 `make apply`
@@ -78,8 +80,12 @@ To destroy or permanently delete the resources. The destroy action cannot be rev
 • Adriana Cavalcanti
 • Marcio de Faria
 
-## Licencing:
-
 ## Road blocks:
 
+- Finding time to work on this project and continue with our daily routines and jobs was the first road block. 
+The majority of our resources were built, but we were unable to run Wordpress as expected. Some of the issues we had includes finishing the tasks definitions, not having EC2 instances registered so ASG was not able to launch any new instance inside the cluster. We also just have a single NAT Gateway in our solution for decreasing costs, two would be ideal. 
+
 ## Improvements:
+
+- Prioritisation of tasks. Not knowing where to start and not having experience working on a similar project caused a few delays in the initial two weeks.  
+- Terraform plan and apply nuances such as naming resources, for example, duplicated names resources issues. 
