@@ -44,16 +44,6 @@ resource "aws_subnet" "private-wp-b" {
   availability_zone = "${var.azs[1]}"
 
   tags = {
-    Name = "private-subnet-b"                  
-    
-
-
-resource "aws_subnet" "private-wp-b" {
-  vpc_id            = "${aws_vpc.da-wordpress-vpc.id}"
-  cidr_block        = "${var.private_subnet-wp-b}"
-  availability_zone = "${var.azs[1]}"
-
-  tags = {
     Name = "private-subnet-b"
   }
 }
