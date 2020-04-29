@@ -1,5 +1,5 @@
 resource "aws_vpc" "da-wordpress-vpc" {
-  cidr_block           = "${var.cidr_vpc}"
+  cidr_block           = var.cidr_vpc
   enable_dns_support   = true
   enable_dns_hostnames = true
 
@@ -30,8 +30,8 @@ resource "aws_nat_gateway" "da-wp-nat" {
 
 resource "aws_subnet" "private-wp-a" {
   vpc_id            = "${aws_vpc.da-wordpress-vpc.id}"
-  cidr_block        = "${var.private_subnet-wp-a}"
-  availability_zone = "${var.azs[0]}"
+  cidr_block        = var.private_subnet-wp-a
+  availability_zone = var.azs[0]
 
   tags = {
     Name = "private-subnet-a"
@@ -40,8 +40,8 @@ resource "aws_subnet" "private-wp-a" {
 
 resource "aws_subnet" "private-wp-b" {
   vpc_id            = "${aws_vpc.da-wordpress-vpc.id}"
-  cidr_block        = "${var.private_subnet-wp-b}"
-  availability_zone = "${var.azs[1]}"
+  cidr_block        =  var.private_subnet-wp-b
+  availability_zone = var.azs[1]
 
   tags = {
     Name = "private-subnet-b"
@@ -51,7 +51,7 @@ resource "aws_subnet" "private-wp-b" {
 resource "aws_subnet" "public-wp-a" {
   vpc_id            = "${aws_vpc.da-wordpress-vpc.id}"
   cidr_block        = "${var.public_subnet-wp-a}"
-  availability_zone = "${var.azs[0]}"
+  availability_zone = var.azs[0]
 
   tags = {
     Name = "public-subnet-a"
@@ -61,7 +61,7 @@ resource "aws_subnet" "public-wp-a" {
 resource "aws_subnet" "public-wp-b" {
   vpc_id            = "${aws_vpc.da-wordpress-vpc.id}"
   cidr_block        = "${var.public_subnet-wp-b}"
-  availability_zone = "${var.azs[1]}"
+  availability_zone = var.azs[1]
 
   tags = {
     Name = "public-subnet-b"
@@ -79,8 +79,12 @@ resource "aws_route_table" "public-access" {
 
 resource "aws_default_route_table" "private-access" {
   default_route_table_id = "${aws_vpc.da-wordpress-vpc.default_route_table_id}"
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.da-wp-nat.id}"
+  }
   tags = {
-    Name = "da-wordpress-default-route"
+    Name = "da-wordpress-private"
   }
 }
 
@@ -107,6 +111,26 @@ resource "aws_route_table_association" "private-access-b-rt" {
 resource "aws_network_acl" "public-subnets-acl" {
   vpc_id     = "${aws_vpc.da-wordpress-vpc.id}"
   subnet_ids = [aws_subnet.public-wp-a.id, aws_subnet.public-wp-b.id]
+
+ingress {
+    protocol   = -1
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = var.cidr_vpc
+    from_port  = 0
+    to_port    = 0
+  }
+
+  egress {
+    protocol   = -1
+    rule_no    = 101
+    action     = "allow"
+    cidr_block = var.cidr_vpc
+    from_port  = 0
+    to_port    = 0
+  }
+
+
   tags = {
     Name = "public-subnets-acl"
   }
@@ -115,8 +139,27 @@ resource "aws_network_acl" "public-subnets-acl" {
 resource "aws_network_acl" "private-subnets-acl" {
   vpc_id     = "${aws_vpc.da-wordpress-vpc.id}"
   subnet_ids = [aws_subnet.private-wp-a.id, aws_subnet.private-wp-b.id]
+
+ingress {
+    protocol   = -1
+    rule_no    = 102
+    action     = "allow"
+    cidr_block = var.cidr_vpc
+    from_port  = 0
+    to_port    = 0
+  }
+
+  egress {
+    protocol   = -1
+    rule_no    = 103
+    action     = "allow"
+    cidr_block = var.cidr_vpc
+    from_port  = 0
+    to_port    = 0
+  }
+
   tags = {
     Name = "private-subnets-acl"
   }
 }
-# no rules defined, deny all traffic in this two ACLs
+
