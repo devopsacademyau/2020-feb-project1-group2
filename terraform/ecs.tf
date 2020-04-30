@@ -14,11 +14,11 @@ resource "aws_launch_configuration" "instance-ecs-da" {
   user_data            = <<EOF
                     #!/bin/bash
                     echo ECS_CLUSTER=${aws_ecs_cluster.ecs-da-wordpress.name} >> /etc/ecs/ecs.config
-                    echo EFS_DIR=/mnt/efs
-                    echo EFS_ID=${aws_efs_file_system.da-wordpress-efs.id}
-                    echo mkdir -p $${EFS_DIR}
+                    EFS_DIR=/mnt/efs
+                    EFS_ID=${aws_efs_file_system.da-wordpress-efs.id}
+                    mkdir -p $${EFS_DIR}
                     echo "$${EFS_ID}:/ $${EFS_DIR} efs tls,_netdev" >> /etc/fstab
-                          for i in $(seq 1 20); do mount -a -t efs defaults && break || sleep 60; done
+                    for i in $(seq 1 20); do mount -a -t efs defaults && break || sleep 60; done
                           EOF
 
   associate_public_ip_address = true
@@ -63,3 +63,42 @@ resource "aws_autoscaling_group" "cluster-asg-da" {
   }
   
 }*/
+
+# TD
+resource "aws_ecs_task_definition" "da-ecs-task" {
+  family                = var.project_name
+  execution_role_arn = aws_iam_role.ecs-instance-role.arn
+  container_definitions = file("tasks/wp_task_definition.json")
+  volume {
+    name = "service-storage-wp"
+    #host_path = "/mnt/efs/wordpress"
+    
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.fs.id
+      root_directory = "/mnt/efs/wordpress"
+    }
+  } 
+}
+
+# SV
+resource "aws_ecs_service" "da-ecs-service" {
+  name = "${var.project_name}-sv"
+  cluster = aws_ecs_cluster.ecs-da-wordpress.id
+  task_definition = aws_ecs_task_definition.da-ecs-task.family
+  desired_count = 2
+  load_balancer {
+      target_group_arn = "${aws_alb_target_group.target-group-alb.arn}"
+      container_name   = "da-wp-task"
+      container_port   = 80
+  }
+}
+
+/*<<EOF
+                    #!/bin/bash
+                    echo ECS_CLUSTER=${aws_ecs_cluster.ecs-da-wordpress.name} >> /etc/ecs/ecs.config
+                    echo EFS_DIR=/mnt/efs
+                    echo EFS_ID=${aws_efs_file_system.da-wordpress-efs.id}
+                    echo mkdir -p $${EFS_DIR}
+                    echo "$${EFS_ID}:/ $${EFS_DIR} efs tls,_netdev" >> /etc/fstab
+                          for i in $(seq 1 20); do mount -a -t efs defaults && break || sleep 60; done
+                          EOF*/
