@@ -12,7 +12,6 @@ resource "aws_eip" "da-wordpress-eip" {
   vpc = true
 }
 
-
 resource "aws_internet_gateway" "da-wordpress-igw" {
   vpc_id = "${aws_vpc.da-wordpress-vpc.id}"
   tags = {
@@ -75,10 +74,13 @@ resource "aws_route_table" "public-access" {
     cidr_block = "0.0.0.0/0"
     gateway_id = "${aws_internet_gateway.da-wordpress-igw.id}"
   }
+  tags = {
+    Name = "da-wordpress-public"
+  }
 }
 
-resource "aws_default_route_table" "private-access" {
-  default_route_table_id = "${aws_vpc.da-wordpress-vpc.default_route_table_id}"
+resource "aws_route_table" "private-access" {
+  vpc_id = "${aws_vpc.da-wordpress-vpc.id}"
   route {
     cidr_block = "0.0.0.0/0"
     nat_gateway_id = "${aws_nat_gateway.da-wp-nat.id}"
@@ -100,12 +102,12 @@ resource "aws_route_table_association" "public-access-b-rt" {
 
 resource "aws_route_table_association" "private-access-a-rt" {
   subnet_id      = aws_subnet.private-wp-a.id
-  route_table_id = "${aws_vpc.da-wordpress-vpc.default_route_table_id}"
+  route_table_id = "${aws_route_table.private-access.id}"
 }
 
 resource "aws_route_table_association" "private-access-b-rt" {
   subnet_id      = aws_subnet.private-wp-b.id
-  route_table_id = "${aws_vpc.da-wordpress-vpc.default_route_table_id}"
+  route_table_id = "${aws_route_table.private-access.id}"
 }
 
 resource "aws_network_acl" "public-subnets-acl" {
@@ -116,16 +118,16 @@ ingress {
     protocol   = -1
     rule_no    = 100
     action     = "allow"
-    cidr_block = var.cidr_vpc
+    cidr_block = "0.0.0.0/0"
     from_port  = 0
     to_port    = 0
   }
 
   egress {
     protocol   = -1
-    rule_no    = 101
+    rule_no    = 100
     action     = "allow"
-    cidr_block = var.cidr_vpc
+    cidr_block = "0.0.0.0/0"
     from_port  = 0
     to_port    = 0
   }
@@ -142,18 +144,18 @@ resource "aws_network_acl" "private-subnets-acl" {
 
 ingress {
     protocol   = -1
-    rule_no    = 102
+    rule_no    = 100
     action     = "allow"
-    cidr_block = var.cidr_vpc
+    cidr_block = "0.0.0.0/0"
     from_port  = 0
     to_port    = 0
   }
 
   egress {
     protocol   = -1
-    rule_no    = 103
+    rule_no    = 100
     action     = "allow"
-    cidr_block = var.cidr_vpc
+    cidr_block = "0.0.0.0/0"
     from_port  = 0
     to_port    = 0
   }
@@ -162,4 +164,3 @@ ingress {
     Name = "private-subnets-acl"
   }
 }
-

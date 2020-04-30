@@ -1,39 +1,25 @@
 # ECS
-resource "aws_ecs_cluster" "ecs-da-migration" {
-  name = "ecs-cluster-da"
+resource "aws_ecs_cluster" "ecs-da-wordpress" {
+  name = "${var.project_name}-ecs"
 }
 
-resource "aws_autoscaling_policy" "cluster-asg-da-policy" {
-  name                      = "cluster-asg-da-policy"
-  policy_type               = "TargetTrackingScaling"
-  estimated_instance_warmup = "90"
-  adjustment_type           = "ChangeInCapacity"
-  autoscaling_group_name    = "${aws_autoscaling_group.cluster-asg-da.name}"
-
-  target_tracking_configuration {
-    predefined_metric_specification {
-      predefined_metric_type = "ASGAverageCPUUtilization"
-    }
-
-    target_value = 40.0
-  }
-}
-
+# LC
 resource "aws_launch_configuration" "instance-ecs-da" {
-  name_prefix                 = "instance-ecs-da"
-  security_groups             = ["${aws_security_group.ecs.id}"]
-  # key_name                    = "${aws_key_pair.demodev.key_name}"
-  image_id                    = "${var.image_id}"
-  instance_type               = "${var.instance_type}"
-  iam_instance_profile        = "${aws_iam_instance_profile.ecs-ec2-role.id}"
-  user_data = <<SCRIPT
-                    echo ECS_CLUSTER=${aws_ecs_cluster.ecs-da-migration.name} >> /etc/ecs/ecs.config
+  name     = "${var.project_name}-lc"
+  security_groups = ["${aws_security_group.ecs.id}"]
+
+  image_id             = "${var.image_id}"
+  instance_type        = "${var.instance_type}"
+  iam_instance_profile = "${aws_iam_instance_profile.ecs-instance-role.id}"
+  user_data            = <<EOF
+                    #!/bin/bash
+                    echo ECS_CLUSTER=${aws_ecs_cluster.ecs-da-wordpress.name} >> /etc/ecs/ecs.config
                     EFS_DIR=/mnt/efs
                     EFS_ID=${aws_efs_file_system.da-wordpress-efs.id}
                     mkdir -p $${EFS_DIR}
                     echo "$${EFS_ID}:/ $${EFS_DIR} efs tls,_netdev" >> /etc/fstab
                     for i in $(seq 1 20); do mount -a -t efs defaults && break || sleep 60; done
-                  SCRIPT
+                          EOF
 
   associate_public_ip_address = true
 
@@ -44,17 +30,15 @@ resource "aws_launch_configuration" "instance-ecs-da" {
 
 # ASG
 resource "aws_autoscaling_group" "cluster-asg-da" {
-    name = "cluster-asg"
-    min_size = 1
-    max_size = 4
-    desired_capacity = 2
-
-    launch_configuration = "${aws_launch_configuration.instance-ecs-da.name}"
-    vpc_zone_identifier = ["${aws_subnet.private-wp-a.id}", "${aws_subnet.private-wp-b.id}"]
-    health_check_grace_period = 120
-    default_cooldown          = 30
-    termination_policies      = ["OldestInstance"]
-
+  name             = "${var.project_name}-asg"
+  vpc_zone_identifier       = ["${aws_subnet.private-wp-a.id}", "${aws_subnet.private-wp-b.id}"]
+  min_size         = 1
+  max_size         = 4
+  desired_capacity = 2
+  launch_configuration      = "${aws_launch_configuration.instance-ecs-da.name}"
+  health_check_grace_period = 0
+  default_cooldown          = 300
+  termination_policies      = ["OldestInstance"]
   tag {
     key                 = "Name"
     value               = "ECS WordPress"
@@ -62,21 +46,59 @@ resource "aws_autoscaling_group" "cluster-asg-da" {
   }
 }
 
-resource "aws_instance" "instance" {
-  ami = "${var.image_id}"
-  instance_type = "${var.instance_type}"
+# ASP
+/*resource "aws_autoscaling_policy" "cluster-asg-da-policy" {
+  name                      = "${var.project_name}-asg-policy"
+  policy_type               = "TargetTrackingScaling"
+  estimated_instance_warmup = "90"
+  adjustment_type           = "ChangeInCapacity"
+  autoscaling_group_name    = "${aws_autoscaling_group.cluster-asg-da.name}"
 
-  subnet_id = aws_subnet.private-wp-a.id
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
 
-  associate_public_ip_address = true
-  iam_instance_profile = "${aws_iam_instance_profile.ecs-ec2-role.id}"
-  user_data = <<SCRIPT
-                    echo ECS_CLUSTER=${aws_ecs_cluster.ecs-da-migration.name} >> /etc/ecs/ecs.config
-                    EFS_DIR=/mnt/efs
-                    EFS_ID=${aws_efs_file_system.da-wordpress-efs.id}
-                    mkdir -p $${EFS_DIR}
-                    echo "$${EFS_ID}:/ $${EFS_DIR} efs tls,_netdev" >> /etc/fstab
-                    for i in $(seq 1 20); do mount -a -t efs defaults && break || sleep 60; done
-                  SCRIPT
-  vpc_security_group_ids = ["${aws_security_group.ecs.id}"]
+    target_value = 40
+  }
+  
+}*/
+
+# TD
+resource "aws_ecs_task_definition" "da-ecs-task" {
+  family                = var.project_name
+  execution_role_arn = aws_iam_role.ecs-instance-role.arn
+  container_definitions = file("tasks/wp_task_definition.json")
+  volume {
+    name = "service-storage-wp"
+    #host_path = "/mnt/efs/wordpress"
+    
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.fs.id
+      root_directory = "/mnt/efs/wordpress"
+    }
+  } 
 }
+
+# SV
+resource "aws_ecs_service" "da-ecs-service" {
+  name = "${var.project_name}-sv"
+  cluster = aws_ecs_cluster.ecs-da-wordpress.id
+  task_definition = aws_ecs_task_definition.da-ecs-task.family
+  desired_count = 2
+  load_balancer {
+      target_group_arn = "${aws_alb_target_group.target-group-alb.arn}"
+      container_name   = "da-wp-task"
+      container_port   = 80
+  }
+}
+
+/*<<EOF
+                    #!/bin/bash
+                    echo ECS_CLUSTER=${aws_ecs_cluster.ecs-da-wordpress.name} >> /etc/ecs/ecs.config
+                    echo EFS_DIR=/mnt/efs
+                    echo EFS_ID=${aws_efs_file_system.da-wordpress-efs.id}
+                    echo mkdir -p $${EFS_DIR}
+                    echo "$${EFS_ID}:/ $${EFS_DIR} efs tls,_netdev" >> /etc/fstab
+                          for i in $(seq 1 20); do mount -a -t efs defaults && break || sleep 60; done
+                          EOF*/
