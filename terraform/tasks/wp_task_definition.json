@@ -1,31 +1,39 @@
-[{
-    "secrets": [{
-        "name": "DATABASE_PASSWORD",
-        "valueFrom": "/wordpress/WORDPRESS_DB_PASSWORD"
-        },
-        {"name": "DATABASE_USER",
-        "valueFrom": "/wordpress/WORDPRESS_DB_USER"
-        }],
-    "volumesFrom": [],
-    "mountPoints": [
-        {
-            "sourceVolume" : "service-storage-wp",
-            "readOnly"      : false,
-            "ContainerPath" : "/var/www/html/"
-        }],
-    
-    "memory": 128,
-    "portMappings": [
-        {
-            "hostPort": 80,
-            "containerPort": 80,
-            "protocol": "tcp"
-        }
-    ],
-    "essential": true,
-    "name": "da-wp-task",
-    "environment": [],
-    "image": "672269152614.dkr.ecr.ap-southeast-2.amazonaws.com/wp-image:latest",
-    "cpu": 2
-
-}]
+[
+    {
+        "secrets": [
+            {
+                "name": "DATABASE_PASSWORD",
+                "valueFrom": "/wordpress/WORDPRESS_DB_PASSWORD"
+            },
+            {
+                "name": "DATABASE_USER",
+                "valueFrom": "/wordpress/WORDPRESS_DB_USER"
+            },
+            {
+                "name": "DATABASE_HOST",
+                "valueFrom": "/wordpress/WORDPRESS_DB_HOST"
+            }
+        ],
+        "volumesFrom": [],
+        "mountPoints": [
+            {
+                "sourceVolume": "service-storage-wp",
+                "readOnly": false,
+                "ContainerPath": "/var/www/html/"
+            }
+        ],
+        "memory": 128,
+        "portMappings": [
+            {
+                "hostPort": 80,
+                "containerPort": 80,
+                "protocol": "tcp"
+            }
+        ],
+        "essential": true,
+        "name": "da-wp-task",
+        "environment": [],
+        "image": "wp-image:latest",
+        "cpu": 2
+    }
+]

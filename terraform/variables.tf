@@ -55,6 +55,7 @@ variable "azs" {
     default = ["ap-southeast-2a", "ap-southeast-2b"]
 }
 
+
 # the ECS optimized AMI's change by region. You can lookup the AMI here:
 variable "image_id" {
   description = "AMI image_id for ECS instance"
