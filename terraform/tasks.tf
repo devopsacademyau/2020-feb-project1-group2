@@ -38,3 +38,5 @@ resource "aws_ecs_service" "wordpress-app" {
         container_port = 80
     }
     depends_on = ["aws_alb.alb-da-wordpress"]
+}
+

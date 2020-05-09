@@ -35,16 +35,3 @@ resource "aws_iam_role_policy_attachment" "ecs-service-attach-c" {
   role       = "${aws_iam_role.ecs-instance-role.name}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
-
-resource "aws_iam_role_policy_attachment" "ecs-attach-a" {
-  role       = "${aws_iam_role.ecs-role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
-}
-resource "aws_iam_role_policy_attachment" "ecs-attach-b" {
-  role       = "${aws_iam_role.ecs-role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
-}
-resource "aws_iam_role_policy_attachment" "ecs-attach-c" {
-  role       = "${aws_iam_role.ecs-role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
