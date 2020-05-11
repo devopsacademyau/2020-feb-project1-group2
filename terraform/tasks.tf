@@ -18,7 +18,7 @@ resource "aws_ecs_task_definition" "wordpress-app" {
             }   
     }
     requires_compatibilities = ["EC2"] 
-    execution_role_arn = "${aws_iam_role.ecs-instance-role.arn}"
+    execution_role_arn = "${aws_iam_role.ecs-role.arn}"
 }
 
 
@@ -27,16 +27,13 @@ resource "aws_ecs_task_definition" "wordpress-app" {
 resource "aws_ecs_service" "wordpress-app" {
     name = "ecs-wp"
     cluster = "${aws_ecs_cluster.ecs-da-wordpress.id}"
-    task_definition = aws_ecs_task_definition.wordpress-app.family
-    #iam_role = "${aws_iam_role.ecs-service-role.name}"
+    task_definition = "${aws_ecs_task_definition.wordpress-app.family}"
     desired_count = 2
-    #launch_type   = "EC2"
     # attaching an ELB with an ECS service
     load_balancer {
         target_group_arn = "${aws_alb_target_group.target-group-alb.arn}"
         container_name = "da-wp-task"
         container_port = 80
     }
-    depends_on = ["aws_alb.alb-da-wordpress"]
 }
 

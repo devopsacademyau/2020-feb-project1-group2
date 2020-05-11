@@ -40,7 +40,7 @@ resource "aws_iam_role_policy_attachment" "ecs-service-attach-c" {
 
 
 resource "aws_iam_role" "ecs-role" {
-  name = "${var.project_name}-ecs"
+  name = "${var.project_name}-ecs-task-def"
   assume_role_policy = <<EOF
 {
 "Version": "2012-10-17",
