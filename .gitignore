@@ -1,0 +1,4 @@
+.terraform/
+code.desktop 
+terraform/info.txt
+*.tfstate*

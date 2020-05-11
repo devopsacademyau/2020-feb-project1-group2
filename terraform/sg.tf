@@ -12,8 +12,8 @@ resource "aws_security_group" "ecs" {
   }
 
   ingress {
-    from_port   = 443
-    to_port     = 443
+    from_port   = 22
+    to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -77,14 +77,25 @@ resource "aws_security_group" "database" {
 resource "aws_security_group" "sg-alb" {
   name   = "alb-sg"
   vpc_id = "${aws_vpc.da-wordpress-vpc.id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
-resource "aws_security_group_rule" "sg-alb" {
+resource "aws_security_group_rule" "sg-alb-in" {
   type              = "ingress"
-  from_port         = "443"
-  to_port           = "443"
-  protocol          = "tcp"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.sg-alb.id}"
 }
-
+resource "aws_security_group_rule" "sg-alb-eg" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.sg-alb.id}"
+}
