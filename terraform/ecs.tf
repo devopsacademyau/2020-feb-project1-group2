@@ -10,6 +10,7 @@ resource "aws_launch_configuration" "instance-ecs-da" {
   instance_type               = "${var.instance_type}"
   associate_public_ip_address = true
   security_groups = ["${aws_security_group.ecs.id}"]
+ #key_name        = ""
   iam_instance_profile = "${aws_iam_instance_profile.ecs-instance-role.arn}"
   user_data = <<EOF
                   #!/bin/bash
