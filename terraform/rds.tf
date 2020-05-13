@@ -1,22 +1,22 @@
 resource "aws_rds_cluster" "wp-db" {
-  
-    database_name                 = "wpdb"
-    engine                        = "aurora-mysql"
-    engine_version                = "5.7.mysql_aurora.2.03.2" 
-    master_username               = "${var.rds_master_username}"
-    master_password               = "${random_string.pw.result}"
-    backup_retention_period       = 1
-    skip_final_snapshot           = true
-    vpc_security_group_ids        = [aws_security_group.database.id]
-    apply_immediately             = true
-    preferred_backup_window       = "02:00-03:00"
-    preferred_maintenance_window  = "wed:03:00-wed:04:00"
-    db_subnet_group_name          = aws_db_subnet_group.wpdb_subnet_group.name
-    lifecycle {
-        create_before_destroy = false
-   }
 
+  database_name                = var.name
+  engine                       = "aurora-mysql"
+  engine_version               = "5.7.mysql_aurora.2.03.2"
+  master_username              = "${var.rds_master_username}"
+  master_password              = "${random_password.pw.result}"
+  backup_retention_period      = 1
+  skip_final_snapshot          = true
+  apply_immediately            = true
+  preferred_backup_window      = "02:00-03:00"
+  vpc_security_group_ids       = [aws_security_group.database.id]
+  preferred_maintenance_window = "wed:03:00-wed:04:00"
+  db_subnet_group_name         = aws_db_subnet_group.wpdb_subnet_group.name
+  lifecycle {
+    create_before_destroy = false
+  }
 }
+
 
 resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
 
