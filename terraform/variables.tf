@@ -1,7 +1,7 @@
 
 variable "name" {
   description = "Base name to use for resources in the module"
-  default     = "da-wordpress"
+  default     = "wpdb"
 }
 
 variable "vpc_id" {
@@ -39,11 +39,11 @@ variable "ecr_repository-image" {
 }
 variable "vpc_rds_subnet_ids" {
   description = "The ID's of the VPC subnets that the RDS cluster instances will be created in"
-  default = ["private-wp-a", "private-wp-b"]
+  default     = ["private-wp-a", "private-wp-b"]
 }
 
 variable "vpc_rds_security_group_id" {
-  default     = "aws_security_group.database.name"
+  default = "aws_security_group.database.name"
 }
 
 variable "rds_master_username" {
@@ -52,7 +52,7 @@ variable "rds_master_username" {
 }
 
 variable "azs" {
-    default = ["ap-southeast-2a", "ap-southeast-2b"]
+  default = ["ap-southeast-2a", "ap-southeast-2b"]
 }
 
 # the ECS optimized AMI's change by region. You can lookup the AMI here:
@@ -61,12 +61,12 @@ variable "image_id" {
   default     = "ami-064db566f79006111"
 }
 
-variable  "instance_type" {
-    description = "AMI instance_type for ECS instance"
-    default     = "t2.micro"
+variable "instance_type" {
+  description = "AMI instance_type for ECS instance"
+  default     = "t2.micro"
 }
 
-variable  "project_name" {
-    description = "Wordpress with LAMP stack migration"
-    default     = "da-wordpress"
+variable "project_name" {
+  description = "Wordpress with LAMP stack migration"
+  default     = "da-wordpress"
 }
