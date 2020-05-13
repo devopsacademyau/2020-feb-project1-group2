@@ -26,6 +26,7 @@ resource "aws_ecs_task_definition" "wordpress-app" {
 
 resource "aws_ecs_service" "wordpress-app" {
     name = "ecs-wp"
+    depends_on = ["aws_alb.alb-da-wordpress"]
     cluster = "${aws_ecs_cluster.ecs-da-wordpress.id}"
     task_definition = "${aws_ecs_task_definition.wordpress-app.family}"
     desired_count = 2
@@ -35,6 +36,5 @@ resource "aws_ecs_service" "wordpress-app" {
         container_name = "da-wp-task"
         container_port = 80
     }
- depends_on = ["aws_alb.alb-da-wordpress"]
 }
 

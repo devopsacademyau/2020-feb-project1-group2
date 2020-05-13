@@ -26,11 +26,13 @@ resource "aws_launch_configuration" "instance-ecs-da" {
 # ASG
 resource "aws_autoscaling_group" "cluster-asg-da" {
   name                 = "${var.project_name}-asg"
-  vpc_zone_identifier  = ["${aws_subnet.public-wp-a.id}", "${aws_subnet.public-wp-b.id}"]
+  depends_on           = ["aws_launch_configuration.instance-ecs-da"]
+  vpc_zone_identifier  = ["${aws_subnet.private-wp-a.id}", "${aws_subnet.private-wp-b.id}"]
   min_size             = 2
   max_size             = 4
   desired_capacity     = 2
   launch_configuration = "${aws_launch_configuration.instance-ecs-da.name}"
+  target_group_arns    = ["${aws_alb_target_group.target-group-alb.arn}"]
   health_check_type    = "EC2"
   health_check_grace_period = 0
   default_cooldown          = 300
