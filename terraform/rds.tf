@@ -7,6 +7,7 @@ resource "aws_rds_cluster" "wp-db" {
     master_password               = "${random_string.pw.result}"
     backup_retention_period       = 1
     skip_final_snapshot           = true
+    vpc_security_group_ids        = [aws_security_group.database.id]
     apply_immediately             = true
     preferred_backup_window       = "02:00-03:00"
     preferred_maintenance_window  = "wed:03:00-wed:04:00"
