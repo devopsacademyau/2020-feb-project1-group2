@@ -19,7 +19,7 @@ _awsinit:
 
 plan:
 	docker-compose run  \
-	--rm terraform plan -out=.terraform-plan
+	--rm terraform plan -var-file="dev.tfvars" -out=.terraform-plan 
 
 
 .PHONY: plan
