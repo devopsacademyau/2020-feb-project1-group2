@@ -17,7 +17,7 @@
     "memory": 128,
     "portMappings": [
         {
-            "hostPort": 80,
+            "hostPort": 0,
             "containerPort": 80,
             "protocol": "tcp"
         }
@@ -25,7 +25,6 @@
     "essential": true,
     "name": "da-wp-task",
     "environment": [],
-    "image": "672269152614.dkr.ecr.ap-southeast-2.amazonaws.com/wp-image:latest",
-    "cpu": 2
-
-}]
+    "image": "672269152614.dkr.ecr.ap-southeast-2.amazonaws.com/wp-image:96fc85d"
+  }
+]

@@ -3,12 +3,12 @@
 ##### ALB config #####
 resource "aws_alb" "alb-da-wordpress" {
   name = "alb-da"
-  security_groups = ["${aws_security_group.sg-alb.id}"]
+  load_balancer_type = "application"
+  security_groups = ["${aws_security_group.sg-alb.id}", "${aws_security_group.ecs.id}"]
   subnets = ["${aws_subnet.public-wp-a.id}", "${aws_subnet.public-wp-b.id}"]
-  lifecycle {
-    create_before_destroy = true
-  }
+  
 }
+
 
 # target group
 resource "aws_alb_target_group" "target-group-alb" {
@@ -17,32 +17,29 @@ resource "aws_alb_target_group" "target-group-alb" {
     protocol = "HTTP"
     vpc_id = "${aws_vpc.da-wordpress-vpc.id}"
 
-    depends_on = [aws_alb.alb-da-wordpress]
+  health_check {
+    healthy_threshold   = "5"
+    unhealthy_threshold = "2"
+    interval            = "30"
+    matcher             = "200"
+    path                = "/"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = "5"
+  }
+
+    lifecycle {
+      create_before_destroy = true
+  }
 }
 
 # port listener
 resource "aws_alb_listener" "albListeners-wp" {
   load_balancer_arn = "${aws_alb.alb-da-wordpress.arn}"
-  port              = "80"
+  port              = 80
   protocol          = "HTTP"
   default_action {
     type = "forward"
     target_group_arn = "${aws_alb_target_group.target-group-alb.arn}"
-
-    #redirect {
-    #  port        = "443"
-    #  protocol    = "HTTPS"
-    #  status_code = "HTTP_301"
-    #}
-  }
-  #port = "443"
-  #protocol = "HTTPS"
-  #ssl_policy = "ELBSecurityPolicy-2016-08"
-  #default_action {
-  #  target_group_arn = "${aws_alb_target_group.target-group-alb.arn}"
-  #  type = "forward"
-  #}
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+   }
 }

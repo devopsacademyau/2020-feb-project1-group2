@@ -9,13 +9,14 @@ resource "aws_rds_cluster" "wp-db" {
   skip_final_snapshot          = true
   apply_immediately            = true
   preferred_backup_window      = "02:00-03:00"
+  vpc_security_group_ids       = [aws_security_group.database.id]
   preferred_maintenance_window = "wed:03:00-wed:04:00"
   db_subnet_group_name         = aws_db_subnet_group.wpdb_subnet_group.name
   lifecycle {
     create_before_destroy = false
   }
-
 }
+
 
 resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
 
