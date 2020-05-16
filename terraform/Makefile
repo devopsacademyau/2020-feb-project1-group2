@@ -34,7 +34,7 @@ apply:
 
 destroy:
 	docker-compose run --rm \
-	terraform destroy -auto-approve
+	terraform destroy -var-file="dev.tfvars" -auto-approve
 .PHONY: destroy
 
 build:
