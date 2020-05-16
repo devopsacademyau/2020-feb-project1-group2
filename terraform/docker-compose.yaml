@@ -7,7 +7,7 @@ services:
     env_file: .env
     working_dir: /terraform
     volumes:
-        - ./creds/:$HOME/.aws/
+        - ${PWD}/creds/:/root/.aws/ 
         - .:/terraform
 
  aws:
