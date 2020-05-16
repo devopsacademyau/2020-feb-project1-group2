@@ -7,7 +7,6 @@ variable "subnet_private_cidr"{}
 variable "subnet_public_id" {}
 variable "sg_ecs_id" {}
 variable "cidr_block_all" {}
-variable "iam_ec2_arn" {}
 variable "iam_policy_arn_task" {}
 variable "ecs_cluster" {}
 variable "db_name" {}

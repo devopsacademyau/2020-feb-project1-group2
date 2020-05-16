@@ -22,7 +22,6 @@ module "application"{
   subnet_public_id = "${module.vpc.subnet_public_id}"
   sg_ecs_id = "${module.ecs.sg_ecs_id}"
   cidr_block_all = "${var.cidr_block_all}"
-  iam_ec2_arn = "${module.ecs.iam_ec2_arn}"
   iam_policy_arn_task = "${var.iam_policy_arn_task}"
   ecs_cluster = "${module.ecs.ecs_cluster}"
   db_name = "${var.db_name}"

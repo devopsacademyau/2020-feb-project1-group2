@@ -175,7 +175,7 @@ resource "aws_ecs_task_definition" "main" {
             }   
     }
     requires_compatibilities = ["EC2"] 
-    execution_role_arn = "${var.iam_ec2_arn}"
+    execution_role_arn = "${aws_iam_role.task.arn}"
 }
 
 # ECS Service
@@ -184,7 +184,7 @@ resource "aws_ecs_service" "main" {
     depends_on = ["aws_alb.main"]
     cluster = "${var.ecs_cluster}"
     task_definition = "${aws_ecs_task_definition.main.family}"
-    desired_count = 2
+    desired_count = 4
     load_balancer {
         target_group_arn = "${aws_alb_target_group.main.arn}"
         container_name = "da-wp-task"
