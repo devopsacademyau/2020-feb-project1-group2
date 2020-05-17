@@ -19,7 +19,7 @@ _awsinit:
 
 plan:
 	docker-compose run  \
-	--rm terraform plan -out=.terraform-plan
+	--rm terraform plan -var-file="dev.tfvars" -out=.terraform-plan 
 
 
 .PHONY: plan
@@ -34,7 +34,7 @@ apply:
 
 destroy:
 	docker-compose run --rm \
-	terraform destroy -auto-approve
+	terraform destroy -var-file="dev.tfvars" -auto-approve
 .PHONY: destroy
 
 build:

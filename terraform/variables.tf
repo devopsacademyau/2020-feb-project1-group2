@@ -1,72 +1,33 @@
+variable "project_name" {}
+variable "region"{}
+variable "azs" {}
+variable "cidr_block_all"{}
+variable "vpc_cidr"{}
+variable "subnet_private_name"{}
+variable "subnet_private_cidr"{}
+variable "subnet_public_name"{}
+variable "subnet_public_cidr"{}
+variable "db_subnet_group_name"{}
+variable "rule_no_acl" {}
+variable "ecr_repository_image" {}
+variable "iam_policy_arn_task" {}
+variable "db_name" {}
+variable "db_engine" {}
+variable "db_engine_version" {}
+variable "db_instance_class" {}
+variable "db_master_username" {}
+variable "efs_name" {}
+variable "image_id" {}
+variable "instance_type" {}
+variable "iam_policy_arn_ec2" {}
 
-variable "name" {
-  description = "Base name to use for resources in the module"
-  default     = "wpdb"
-}
 
-variable "vpc_id" {
-  description = "VPC ID to create cluster in"
-  default     = "aws_vpc.da-wordpress-vpc.id"
-}
 
-variable "vpc_subnets" {
-  description = "List of VPC subnets to put instances in"
-  default     = []
-}
 
-variable "cidr_vpc" {
-  default = "10.0.0.0/16"
-}
 
-variable "private_subnet-wp-a" {
-  default = "10.0.63.0/24"
-}
 
-variable "private_subnet-wp-b" {
-  default = "10.0.127.0/24"
-}
 
-variable "public_subnet-wp-a" {
-  default = "10.0.191.0/24"
-}
 
-variable "public_subnet-wp-b" {
-  default = "10.0.255.0/24"
-}
 
-variable "ecr_repository-image" {
-  default = "wp-image"
-}
-variable "vpc_rds_subnet_ids" {
-  description = "The ID's of the VPC subnets that the RDS cluster instances will be created in"
-  default     = ["private-wp-a", "private-wp-b"]
-}
 
-variable "vpc_rds_security_group_id" {
-  default = "aws_security_group.database.name"
-}
 
-variable "rds_master_username" {
-  description = "The ID's of the VPC subnets that the RDS cluster instances will be created in"
-  default     = "wpadmin"
-}
-
-variable "azs" {
-  default = ["ap-southeast-2a", "ap-southeast-2b"]
-}
-
-# the ECS optimized AMI's change by region. You can lookup the AMI here:
-variable "image_id" {
-  description = "AMI image_id for ECS instance"
-  default     = "ami-064db566f79006111"
-}
-
-variable "instance_type" {
-  description = "AMI instance_type for ECS instance"
-  default     = "t2.micro"
-}
-
-variable "project_name" {
-  description = "Wordpress with LAMP stack migration"
-  default     = "da-wordpress"
-}

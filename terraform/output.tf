@@ -1,4 +1,3 @@
-
-output "ecr-url" {
-  value = ["${aws_ecr_repository.da-wordpress-ecr.repository_url}"]
+output "ecr_url" {
+  value = "${module.application.ecr_url}"
 }
