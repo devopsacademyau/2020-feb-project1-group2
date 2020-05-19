@@ -1,43 +1,38 @@
 SHA = $(shell git rev-parse --short HEAD)
+RUN = docker-compose run --rm
 
-##Tasks
-
+##TASKS
 init:
 	echo ID=$(SHA) > .env
-	docker-compose run --rm \
-	terraform init
+	$(RUN) terraform init
 .PHONY: init
-
 
 _awsinit:
 	mkdir -p creds
-	docker-compose run --rm aws \
-	configure
-
+	$(RUN) aws configure
 .PHONY: _awsinit
 
+build:
+	$(RUN) terraform apply -target module.ecr -var-file="dev.tfvars" -auto-approve
+	bash -x ../scripts/push.sh
+.PHONY: build
 
 plan:
-	docker-compose run  \
-	--rm terraform plan -var-file="dev.tfvars" -out=.terraform-plan 
-
-
+	$(RUN) terraform plan -var-file="dev.tfvars" -out=.terraform-plan 
 .PHONY: plan
 
-
 apply:
-	docker-compose run --rm \
-	terraform apply .terraform-plan \
-	
-
+	$(RUN) terraform apply .terraform-plan 
 .PHONY: apply
 
 destroy:
-	docker-compose run --rm \
-	terraform destroy -var-file="dev.tfvars" -auto-approve
+	$(RUN) terraform destroy -var-file="dev.tfvars" -auto-approve
 .PHONY: destroy
 
-build:
-	bash -x ../scripts/push.sh
-
-.PHONY: build
+all:
+	make _awsinit
+	make init
+	make build
+	make plan
+	make apply
+.PHONY: all

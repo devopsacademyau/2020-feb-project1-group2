@@ -1,5 +1,4 @@
 variable "project_name" {}
-variable "ecr_repository_image" {}
 variable "vpc_id"{}
 variable "vpc_cidr" {}
 variable "subnet_private_id" {}
@@ -16,3 +15,5 @@ variable "db_engine" {}
 variable "db_engine_version" {}
 variable "db_instance_class" {}
 variable "efs_name" {}
+variable "ecr_url" {}
+variable "region" {}

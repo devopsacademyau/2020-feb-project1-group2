@@ -1,0 +1,28 @@
+[{
+    "secrets": [
+        {   "name": "WORDPRESS_DB_HOST",    "valueFrom": "/wordpress/WORDPRESS_DB_HOST" },
+        {   "name": "WORDPRESS_DB_NAME",    "valueFrom": "/wordpress/WORDPRESS_DB_NAME"},
+        {   "name": "WORDPRESS_DB_USER",    "valueFrom": "/wordpress/WORDPRESS_DB_USER"},
+        {   "name": "WORDPRESS_DB_PASSWORD","valueFrom": "/wordpress/WORDPRESS_DB_PASSWORD"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [
+        {
+            "sourceVolume" : "service-storage-wp",
+            "readOnly"      : false,
+            "ContainerPath" : "/var/www/html/"
+        }],
+    "memory": 128,
+    "portMappings": [
+        {
+            "hostPort": 0,
+            "containerPort": 80,
+            "protocol": "tcp"
+        }
+    ],
+    "essential": true,
+    "name": "da-wp-task",
+    "environment": [],
+    "image": "${image}:"
+}
+]

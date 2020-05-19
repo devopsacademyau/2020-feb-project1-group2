@@ -14,8 +14,7 @@ module "vpc" {
 module "application"{
   source = "./modules/application"
   project_name = "${var.project_name}"
-  ecr_repository_image = "${var.ecr_repository_image}"
-  vpc_id = "${module.vpc.vpc_id}"
+   vpc_id = "${module.vpc.vpc_id}"
   vpc_cidr = "${var.vpc_cidr}"
   subnet_private_id = "${module.vpc.subnet_private_id}"
   subnet_private_cidr = "${var.subnet_private_cidr}"
@@ -31,6 +30,8 @@ module "application"{
   db_master_username = "${var.db_master_username}"
   db_subnet_group_name = "${var.db_subnet_group_name}"
   efs_name = "${var.efs_name}"
+  ecr_url = "${module.ecr.ecr_url}"
+  region = "${var.region}"
 }
 
 module "ecs"{
@@ -45,4 +46,9 @@ module "ecs"{
   cidr_block_all = "${var.cidr_block_all}"
   iam_policy_arn_ec2 = "${var.iam_policy_arn_ec2}"
   sg_lb_id = "${module.application.sg_lb_id}"
+}
+
+module "ecr" {
+  source = "./modules/ecr"
+  ecr_repository_image = "${var.ecr_repository_image}"
 }
