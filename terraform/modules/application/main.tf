@@ -36,9 +36,10 @@ EOF
 
 # EFS
 resource "aws_efs_file_system" "main" {
-  creation_token = "wordpress"
+  creation_token   = "wordpress"
   performance_mode = "generalPurpose"
-  throughput_mode = "bursting"
+  throughput_mode  = "bursting"
+  encrypted = true
 
   tags = {
     Name = "${var.efs_name}"
@@ -47,10 +48,10 @@ resource "aws_efs_file_system" "main" {
 
 # EFS Mount
 resource "aws_efs_mount_target" "main" {
-  count = "${length(var.subnet_private_id)}"
-  file_system_id = "${aws_efs_file_system.main.id}"
-  subnet_id      = "${element(var.subnet_private_id,count.index)}"
-  security_groups = ["${aws_security_group.efs.id}"]  
+  count           = "${length(var.subnet_private_id)}"
+  file_system_id  = "${aws_efs_file_system.main.id}"
+  subnet_id       = "${element(var.subnet_private_id, count.index)}"
+  security_groups = ["${aws_security_group.efs.id}"]
 }
 
 # EFS Security Group 
@@ -87,14 +88,14 @@ resource "aws_security_group" "rds" {
   name        = "${var.project_name}-RDS"
   description = "Allow inbound traffic"
   vpc_id      = "${var.vpc_id}"
-  
- ingress {
-        from_port       = 3306
-        to_port         = 3306
-        protocol        = "tcp"
-        cidr_blocks     = ["${var.vpc_cidr}"]
-        security_groups = ["${var.sg_ecs_id}"]
-   } 
+
+  ingress {
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    cidr_blocks     = ["${var.vpc_cidr}"]
+    security_groups = ["${var.sg_ecs_id}"]
+  }
   tags = {
     Name = "${var.project_name}-RDS"
   }
@@ -102,18 +103,18 @@ resource "aws_security_group" "rds" {
 
 # Load Balancer
 resource "aws_alb" "main" {
-  name = "${var.project_name}-LB"
+  name               = "${var.project_name}-LB"
   load_balancer_type = "application"
-  security_groups = ["${aws_security_group.lb.id}", "${var.sg_ecs_id}"]
-  subnets = "${var.subnet_public_id}"
+  security_groups    = ["${aws_security_group.lb.id}", "${var.sg_ecs_id}"]
+  subnets            = "${var.subnet_public_id}"
 }
 
 # Load Balancer - Target Group
 resource "aws_alb_target_group" "main" {
-    name = "${var.project_name}-LB-Target-Group"
-    port = 80
-    protocol = "HTTP"
-    vpc_id = "${var.vpc_id}"
+  name     = "${var.project_name}-LB-Target-Group"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = "${var.vpc_id}"
 
   health_check {
     healthy_threshold   = "5"
@@ -126,8 +127,8 @@ resource "aws_alb_target_group" "main" {
     timeout             = "5"
   }
 
-    lifecycle {
-      create_before_destroy = true
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -137,9 +138,9 @@ resource "aws_alb_listener" "main" {
   port              = 80
   protocol          = "HTTP"
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = "${aws_alb_target_group.main.arn}"
-   }
+  }
 }
 
 # LB Security Group
@@ -157,44 +158,44 @@ resource "aws_security_group_rule" "lb" {
   security_group_id = "${aws_security_group.lb.id}"
 }
 
-# ECS Task Defition
+# ECS Task Definition
 data "template_file" "main" {
-    template = "${file("${path.module}/task_definition.json")}"
+  template = "${file("${path.module}/task_definition.json")}"
 }
 
 resource "aws_ecs_task_definition" "main" {
-    family = "main"
-    
-    container_definitions  = "${data.template_file.main.rendered}"
+  family = "main"
 
-    volume {
-        name = "service-storage-wp"
-        efs_volume_configuration {
-            file_system_id = "${aws_efs_file_system.main.id}"
-            root_directory = "/"
-            }   
+  container_definitions = "${data.template_file.main.rendered}"
+
+  volume {
+    name = "service-storage-wp"
+    efs_volume_configuration {
+      file_system_id = "${aws_efs_file_system.main.id}"
+      root_directory = "/"
     }
-    requires_compatibilities = ["EC2"] 
-    execution_role_arn = "${aws_iam_role.task.arn}"
+  }
+  requires_compatibilities = ["EC2"]
+  execution_role_arn       = "${aws_iam_role.task.arn}"
 }
 
 # ECS Service
 resource "aws_ecs_service" "main" {
-    name = "${var.project_name}-Service"
-    depends_on = ["aws_alb.main"]
-    cluster = "${var.ecs_cluster}"
-    task_definition = "${aws_ecs_task_definition.main.family}"
-    desired_count = 4
-    load_balancer {
-        target_group_arn = "${aws_alb_target_group.main.arn}"
-        container_name = "da-wp-task"
-        container_port = 80
-    }
+  name            = "${var.project_name}-Service"
+  depends_on      = ["aws_alb.main"]
+  cluster         = "${var.ecs_cluster}"
+  task_definition = "${aws_ecs_task_definition.main.family}"
+  desired_count   = 4
+  load_balancer {
+    target_group_arn = "${aws_alb_target_group.main.arn}"
+    container_name   = "da-wp-task"
+    container_port   = 80
+  }
 }
 
 # Task Definition Role
 resource "aws_iam_role" "task" {
-  name = "${var.project_name}-ECS-Task-Defition"
+  name               = "${var.project_name}-ECS-Task-Defition"
   assume_role_policy = <<EOF
 {
 "Version": "2012-10-17",
@@ -243,7 +244,7 @@ resource "aws_rds_cluster_instance" "main" {
   identifier           = "${var.db_name}-db"
   engine               = "${var.db_engine}"
   engine_version       = "${var.db_engine_version}"
-  instance_class       = "${var.db_instance_class}" 
+  instance_class       = "${var.db_instance_class}"
   db_subnet_group_name = "${aws_db_subnet_group.main.name}"
   publicly_accessible  = false
   lifecycle {
@@ -253,8 +254,8 @@ resource "aws_rds_cluster_instance" "main" {
 
 # RDS Instance
 resource "aws_db_subnet_group" "main" {
-  name        = "${var.db_subnet_group_name}"
-  subnet_ids  = "${var.subnet_private_id}"
+  name       = "${var.db_subnet_group_name}"
+  subnet_ids = "${var.subnet_private_id}"
 }
 
 # RDS Password
@@ -275,7 +276,7 @@ resource "aws_ssm_parameter" "wordpress-db-user" {
   name        = "/wordpress/WORDPRESS_DB_USER"
   description = "The user parameter to be used by the container"
   type        = "SecureString"
-  value       = "${var.db_master_username}" 
+  value       = "${var.db_master_username}"
 }
 resource "aws_ssm_parameter" "wordpress-db-password" {
   name        = "/wordpress/WORDPRESS_DB_PASSWORD"
