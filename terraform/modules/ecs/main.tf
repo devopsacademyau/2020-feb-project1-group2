@@ -119,3 +119,9 @@ resource "aws_iam_role_policy_attachment" "ec2" {
   count      = "${length(var.iam_policy_arn_ec2)}"
   policy_arn = "${var.iam_policy_arn_ec2[count.index]}"
 }
+
+# CLOUDWATCH
+resource "aws_cloudwatch_log_group" "wp-logs" {
+  name = "${var.project_name}-CW"
+  retention_in_days = 30
+}
