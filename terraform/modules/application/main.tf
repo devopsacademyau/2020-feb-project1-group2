@@ -3,6 +3,7 @@ resource "aws_efs_file_system" "main" {
   creation_token = "wordpress"
   performance_mode = "generalPurpose"
   throughput_mode = "bursting"
+  encrypted = true
 
   tags = {
     Name = "${var.efs_name}"
@@ -126,7 +127,10 @@ data "template_file" "main" {
   template = "${file("${path.module}/task_definition.json")}"
 
   vars = {
-    image = "${var.ecr_url}"
+    image = "${var.ecr_url}",
+    cw_log_group = "${aws_cloudwatch_log_group.main.name}",
+    region = "${var.region}",
+    cw_log_stream = "${var.project_name}-Stream"
   }
 }
 
@@ -255,3 +259,9 @@ resource "aws_ssm_parameter" "wordpress-db-name" {
   type        = "SecureString"
   value       = "${var.db_name}"
 }
+
+# CLOUDWATCH
+resource "aws_cloudwatch_log_group" "main" {
+  name = "${var.project_name}-CW"
+  retention_in_days = 30
+} 
