@@ -1,6 +1,3 @@
-output "ecr_url" {
-  value = "${aws_ecr_repository.main.repository_url}"
-}
 output "lb_tg_arn" {
   value = "${aws_alb_target_group.main.arn}"
 }
