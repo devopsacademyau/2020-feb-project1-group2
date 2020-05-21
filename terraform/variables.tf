@@ -20,14 +20,3 @@ variable "efs_name" {}
 variable "image_id" {}
 variable "instance_type" {}
 variable "iam_policy_arn_ec2" {}
-
-
-
-
-
-
-
-
-
-
-
