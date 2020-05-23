@@ -5,4 +5,3 @@ terraform {
     region = "ap-southeast-2"
  }
 }
-~   
