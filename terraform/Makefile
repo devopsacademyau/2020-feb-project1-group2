@@ -1,11 +1,13 @@
 SHA = $(shell git rev-parse --short HEAD)
 RUN = docker-compose run --rm
+BUCKET = wordpress-s3
+REGION=$(aws configure get region)
 
 ##TASKS
 
 s3_init:
 	docker-compose run --rm aws \
-	s3api create-bucket --bucket wordpress-s3 --create-bucket-configuration LocationConstraint=ap-southeast-2 --acl private
+	s3api create-bucket --bucket $(BUCKET) --create-bucket-configuration LocationConstraint=$(REGION) --acl private
 
 init:
 	$(RUN) terraform init
