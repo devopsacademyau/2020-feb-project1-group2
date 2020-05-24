@@ -16,7 +16,7 @@ subnet_public_cidr = ["10.0.191.0/24", "10.0.255.0/24"]
 
 db_subnet_group_name = "wordpress"
 
-ecr_repository_image = "wp-image"
+ecr_repository_image = "placeholder"
 
 iam_policy_arn_task = ["arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess", "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role", "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy", "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"]
 iam_policy_arn_ec2 = ["arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role", "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess", "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"]
