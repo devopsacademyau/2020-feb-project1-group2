@@ -122,6 +122,13 @@ resource "aws_security_group_rule" "lb" {
   security_group_id = "${aws_security_group.lb.id}"
 }
 
+
+data "aws_ecs_task_definition" "main" {
+  task_definition = "${aws_ecs_task_definition.main.family}"
+  depends_on      = ["aws_ecs_task_definition.main"]
+}
+
+
 # ECS Task Defition
 data "template_file" "main" {
   template = "${file("${path.module}/task_definition.json")}"
@@ -153,13 +160,14 @@ resource "aws_ecs_service" "main" {
     name = "${var.project_name}-Service"
     depends_on = ["aws_alb.main"]
     cluster = "${var.ecs_cluster}"
-    task_definition = "${aws_ecs_task_definition.main.family}"
+   #task_definition = "${aws_ecs_task_definition.main.family}"
     desired_count = 4
     load_balancer {
       target_group_arn = "${aws_alb_target_group.main.arn}"
       container_name = "da-wp-task"
       container_port = 80
     }
+ task_definition = "${aws_ecs_task_definition.main.family}:${max("${aws_ecs_task_definition.main.revision}", "${data.aws_ecs_task_definition.main.revision}")}"
 }
 
 # Task Definition Role
