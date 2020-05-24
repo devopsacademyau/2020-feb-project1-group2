@@ -38,11 +38,11 @@ Firstly, clone or download this Repository:
 
 [GitHub - devopsacademyau/2020-feb-project1-group2](https://github.com/devopsacademyau/2020-feb-project1-group2)
 
-After cloning it, please ensure you are in the terraform directory.
+After cloning it, please ensure you are in the terraform directory:
 
 `cd terraform`
 
-Execute the command
+Execute the command:
 
  `make all`
 
@@ -51,10 +51,11 @@ Execute the command
 Initialize the AWS Component, that is to pass your credentials to terraform.
 You will be asked for your Secret key via the AWSCLI Container:
 
-AWS Access Key ID [None]:
-AWS Secret Access Key [None]:
-Default region name [None]:
-Default output format [None]—-
+
+AWS Access Key ID [None]:\
+AWS Secret Access Key [None]:\
+Default region name [None]:\
+Default output format [None]—-\
 
 Then finally,
 
@@ -64,18 +65,18 @@ To destroy or permanently delete the resources. The destroy action cannot be rev
 
 Alternatively, if you prefer to see the execution of each step separately, you can do so by typing each of these commands followed by Enter.
 
-`make init`
-`make _awsinit`
-`make build`
-`make plan`
+`make init`\
+`make _awsinit`\
+`make build`\
+`make plan`\
 `make apply`
 
 ## Authors:
 
-• Matt Garces
-• Denise Horstmann
-• Adriana Cavalcanti
-• Marcio de Faria
+* Matt Garces
+* Denise Horstmann
+* Adriana Cavalcanti
+* Marcio de Faria
 
 ## Road blocks:
 
